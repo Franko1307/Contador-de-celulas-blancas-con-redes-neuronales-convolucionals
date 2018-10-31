@@ -1,0 +1,5 @@
+docker cp contenedor_contador_celulas_blancas:/estacion-de-trabajo output/
+
+docker stop contenedor_contador_celulas_blancas
+
+docker rm contenedor_contador_celulas_blancas
