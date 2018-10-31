@@ -8,6 +8,7 @@ from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
 from sklearn.preprocessing import LabelEncoder
 from sklearn.cross_validation import train_test_split
+from keras import optimizers
 import cv2
 import scipy
 import os
@@ -23,7 +24,7 @@ def get_data(folder):
         if not wbc_type.startswith('.'):
             if wbc_type in ['NEUTROFILO']:
                 label = 'NEUTROFILO'
-                
+
             elif wbc_type in ['EOSINOFILO']:
                 label = 'EOSINOFILO'
             elif wbc_type in ['LINFOCITO']:
@@ -40,7 +41,7 @@ def get_data(folder):
                     y.append(label)
     X = np.asarray(X)
     y = np.asarray(y)
-    
+
     return X,y
 
 def get_model():
@@ -65,9 +66,16 @@ def get_model():
     model.add(Dense(num_classes))
     model.add(Activation('softmax'))
 
-    model.compile(loss='categorical_crossentropy',
-                optimizer='rmsprop',
-                metrics=['accuracy'])
+    optim = optimizers.Adam(
+        lr=0.001,
+        beta_1=0.9,
+        beta_2=0.999,
+        epsilon=None,
+        decay=1e-6,
+        amsgrad=False
+    )
+
+    model.compile(loss='categorical_crossentropy', optimizer=optim, metrics=['accuracy'])
 
     return model
 
@@ -93,7 +101,7 @@ if __name__ == "__main__":
     y_train = np_utils.to_categorical(y_train)
     y_test = np_utils.to_categorical(y_test)
 
-    
+
     datagen = ImageDataGenerator(
         rotation_range=20,
         width_shift_range=0.2,
@@ -116,7 +124,7 @@ if __name__ == "__main__":
 
     model = get_model()
 
-    filepath = "modelo-version-1"
+    filepath = "modelo-version-2"
     checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
     callbacks_list = [checkpoint]
 
@@ -130,6 +138,4 @@ if __name__ == "__main__":
         callbacks= callbacks_list
     )
 
-    model.save('modelo-1.h5')  # always save your weights after training or during training
-
-
+    model.save('modelo-2.h5')  # always save your weights after training or during training
