@@ -91,7 +91,7 @@ if __name__ == "__main__":
     print(model.summary())
 
     X_train, y_train = get_data(BASE_DIR + 'base-de-datos/entrenamiento/')
-    X_test, y_test = get_data(BASE_DIR + 'base-de-datos/validacion-facil/')
+    X_test, y_test = get_data(BASE_DIR + 'base-de-datos/validacion/')
 
     encoder = LabelEncoder()
     encoder.fit(y_train)
