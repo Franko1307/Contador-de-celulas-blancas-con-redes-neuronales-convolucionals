@@ -66,16 +66,7 @@ def get_model():
     model.add(Dense(num_classes))
     model.add(Activation('softmax'))
 
-    optim = optimizers.Adam(
-        lr=0.001,
-        beta_1=0.9,
-        beta_2=0.999,
-        epsilon=None,
-        decay=1e-6,
-        amsgrad=False
-    )
-
-    model.compile(loss='categorical_crossentropy', optimizer=optim, metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 
     return model
 
@@ -124,18 +115,13 @@ if __name__ == "__main__":
 
     model = get_model()
 
-    filepath = "modelo-version-2"
-    checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
-    callbacks_list = [checkpoint]
-
     # fits the model on batches with real-time data augmentation:
     model.fit_generator(
         train_generator,
         steps_per_epoch=len(X_train),
         validation_data=validation_generator,
         validation_steps=len(X_test),
-        epochs=epochs,
-        callbacks= callbacks_list
+        epochs=epochs
     )
 
     model.save('modelo-2.h5')  # always save your weights after training or during training
